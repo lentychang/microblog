@@ -21,7 +21,7 @@ class Config():
 
     POSTS_PER_PAGE = 3
 
-    LANGUAGES = ['en','zh','zh_TW']
+    LANGUAGES = {'en':'English','zh':'Chinese(Trad.)', 'de':'Deutsch'}
 
     BABEL_TRANSLATION_DIRECTORIES = 'translations'
 

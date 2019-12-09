@@ -1,6 +1,6 @@
 
 from flask import render_template, flash, redirect, url_for, request, g, \
-                  jsonify, current_app
+    jsonify, current_app, session
 from app import db
 from flask_login import current_user, login_user, logout_user, login_required
 from datetime import datetime
@@ -12,17 +12,21 @@ from app.main.forms import PostForm, EditProfileForm, SearchForm
 from app.models import Post, User
 from app.main import bp
 
+
 @bp.before_request
 def before_request():
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
         g.search_form = SearchForm()
-    
-    lang_str = str(get_locale())
-    print(lang_str)
-    lang_str = 'zh_TW' if lang_str=='zh_Hant_TW' else lang_str
-    g.locale = str(lang_str)
+
+    try:
+        g.locale = session['LANG']
+    except KeyError:
+        lang_str = str(get_locale())
+        print(lang_str)
+        lang_str = 'zh_TW' if lang_str == 'zh_Hant_TW' else lang_str
+        g.locale = str(lang_str)
 
 # This means that when a web browser requests either of these two URLs, Flask is going to invoke this function and pass the return value of it back to the browser as a response.
 @bp.route('/', methods=['GET', 'POST'])
@@ -36,7 +40,8 @@ def index():
         language = guess_language(form.post.data)
         if language == 'UNKNOWN' or len(language) > 5:
             language = ''
-        post = Post(body=form.post.data, author=current_user, language=language)
+        post = Post(body=form.post.data,
+                    author=current_user, language=language)
         db.session.add(post)
         db.session.commit()
         flash(_('Your post is now live!'))
@@ -52,7 +57,6 @@ def index():
     return render_template('index.html', title=_('Home'), form=form,
                            posts=posts.items, next_url=next_url,
                            prev_url=prev_url)
-
 
 
 @bp.route('/user/<username>')
@@ -134,6 +138,7 @@ def explore():
     return render_template("index.html", title='Explore', posts=posts.items,
                            next_url=next_url, prev_url=prev_url)
 
+
 @bp.route('/translate', methods=['POST'])
 @login_required
 def translate_text():
@@ -156,3 +161,9 @@ def search():
         if page > 1 else None
     return render_template('search.html', title=_('Search'), posts=posts,
                            next_url=next_url, prev_url=prev_url)
+
+
+@bp.route('/lang/<language>')
+def set_language(language=None):
+    session['LANG'] = language
+    return redirect(url_for('main.index'))
