@@ -5,40 +5,54 @@ services:
         container_name: dbserver
         hostname: dbserver
         env_file: ../.dbenv
-        networks: 
+        networks:
             - blogs
         # volumes:
         #     - /my/own/datadir:/var/lib/mysql
-        
+
     microblog:
-        depends_on: 
-            - dbserver
+        # depends_on:
+        #     - dbserver
         image: microblog:latest
         container_name: microblog
         hostname: microblog
-        networks: 
-            - blogs
+        # networks:
+        #     - blogs
         ports:
             - 8000:5000
         env_file: ../.env
-        volumes: 
+        volumes:
             - /home/lenty/scripts/python/flask/microblog/app:/home/microblog/app
+
         working_dir: /home/microblog
         user: microblog
         entrypoint: ./boot.sh
-        command: tail -f /dev/null
+        # command: tail -f /dev/null
 
     elasticsearch-server:
         image: docker.elastic.co/elasticsearch/elasticsearch:7.5.0
         hostname: elasticsearch-server
         container_name: elasticsearch-server
-        networks: 
+        networks:
             - blogs
         ports:
             - 9200:9200
             - 9300:9300
-        environment: 
-            - discovery.type=single-node
-networks: 
+        # user: elasticsearch
+        volumes:
+            # - /home/lenty/scripts/python/flask/microblog/Docker/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+            - /home/lenty/scripts/python/flask/microblog/Docker/esconfig:/usr/share/elasticsearch/config
+            - /home/lenty/scripts/python/flask/microblog/Docker/data:/usr/share/elasticsearch/configs
+            # - /home/lenty/scripts/python/flask/microblog/Docker/data:/var/lib/elasticsearch
+
+        # environment:
+            # - discovery.type=single-node
+            # - ES_PATH_CONF=/etc/elasticsearch
+            # - path.data=/var/lib/elasticsearch
+        # command: ["/usr/local/bin/docker-entrypoint.sh"]
+        # command: ["/bin/bash","-c","bin/elasticsearch"]
+        command: tail -f /dev/null
+
+networks:
     blogs:
         driver: bridge
