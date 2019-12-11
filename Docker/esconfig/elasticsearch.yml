@@ -1,0 +1,6 @@
+cluster.name: "docker-cluster"
+network.host: 0.0.0.0
+path.data: /usr/share/elasticsearch/data
+discovery.type: single-node
+xpack.security.enabled: false
+
