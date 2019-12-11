@@ -11,22 +11,23 @@ services:
         #     - /my/own/datadir:/var/lib/mysql
 
     microblog:
-        depends_on:
-            - dbserver
+        # depends_on:
+        #     - dbserver
         image: microblog:latest
         container_name: microblog
         hostname: microblog
-        networks:
-            - blogs
+        # networks:
+        #     - blogs
         ports:
             - 8000:5000
         env_file: ../.env
         volumes:
             - /home/lenty/scripts/python/flask/microblog/app:/home/microblog/app
+
         working_dir: /home/microblog
         user: microblog
         entrypoint: ./boot.sh
-        command: tail -f /dev/null
+        # command: tail -f /dev/null
 
     elasticsearch-server:
         image: docker.elastic.co/elasticsearch/elasticsearch:7.5.0
