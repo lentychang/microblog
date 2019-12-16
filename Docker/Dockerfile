@@ -20,7 +20,7 @@ RUN chmod +x boot.sh
 ENV FLASK_APP microblog.py
 
 RUN chown -R microblog:microblog ./
-# USER microblog
+USER microblog
 
 EXPOSE 5000
-# ENTRYPOINT ["./boot.sh"]
+ENTRYPOINT ["./boot.sh"]
