@@ -8,3 +8,4 @@ __pycache__
 *.dbenv
 .venv
 *.bak
+.azure

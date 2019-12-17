@@ -20,7 +20,12 @@ RUN chmod +x boot.sh
 ENV FLASK_APP microblog.py
 
 RUN chown -R microblog:microblog ./
+
+# RUN apt-get update && apt-get install -y openssh-server
+# COPY ./Docker/sshd_config /etc/ssh
+
 USER microblog
 
 EXPOSE 5000
 ENTRYPOINT ["./boot.sh"]
+#CMD /usr/sbin/sshd
