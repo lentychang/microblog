@@ -1,7 +1,8 @@
 #!/bin/bash
-resourceGrp=Test
+if [ -z ${resourceGrp+x} ]; then export resourceGrp=Test; fi
+if [ -z ${location+x} ]; then export location=westeurope; fi
+
 accountName=elasticsearchconfig
-location=westeurope
 sharename=esconfig
 
 esconfigLocDir=/home/lenty/scripts/python/flask/microblog/Docker/esconfig
