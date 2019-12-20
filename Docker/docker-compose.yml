@@ -53,6 +53,8 @@ services:
         env_file: ./env/.testEnv
         volumes:
             - ../app:/home/microblog/app
+            - ../config.py:/home/microblog/config.py
+            - ../microblog.py:/home/microblog/microblog.py
 
         working_dir: /home/microblog
         user: microblog
