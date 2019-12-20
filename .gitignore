@@ -1,5 +1,6 @@
 .vscode
 env
+!Docker/env
 logs
 __pycache__
 *.pyc
@@ -9,3 +10,4 @@ __pycache__
 .venv
 *.bak
 .azure
+Docker/data/*

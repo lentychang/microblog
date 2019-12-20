@@ -4,30 +4,15 @@ services:
         image:  mysql/mysql-server:8.0
         container_name: dbserver
         hostname: dbserver
-        env_file: ../.dbenv
         networks:
             - blogs
-        # volumes:
-        #     - /my/own/datadir:/var/lib/mysql
-
-    microblog:
-        # depends_on:
-        #     - dbserver
-        image: microblog:latest
-        container_name: microblog
-        hostname: microblog
-        # networks:
-        #     - blogs
+        # open ports to host for testing 
         ports:
-            - 8000:5000
-        env_file: ../.env
-        volumes:
-            - /home/lenty/scripts/python/flask/microblog/app:/home/microblog/app
+            - 33060:3306
+        env_file: ./env/.testEnv
 
-        working_dir: /home/microblog
-        user: microblog
-        entrypoint: ./boot.sh
-        # command: tail -f /dev/null
+        volumes:
+            - ./data/mysql:/var/lib/mysql
 
     elasticsearch-server:
         image: docker.elastic.co/elasticsearch/elasticsearch:7.5.0
@@ -38,20 +23,41 @@ services:
         ports:
             - 9200:9200
             - 9300:9300
-        # user: elasticsearch
+        user: elasticsearch
         volumes:
-            # - /home/lenty/scripts/python/flask/microblog/Docker/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-            - /home/lenty/scripts/python/flask/microblog/Docker/esconfig:/usr/share/elasticsearch/config
-            - /home/lenty/scripts/python/flask/microblog/Docker/data:/usr/share/elasticsearch/configs
-            # - /home/lenty/scripts/python/flask/microblog/Docker/data:/var/lib/elasticsearch
+            # - ./esconfig/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+            # - ./esconfig:/usr/share/elasticsearch/config
+            # [WARN] Folders in host must be configure as 775 regarding accessbility
+            - ./data/es/data:/usr/share/elasticsearch/data
+            - ./data/es/logs:/usr/share/elasticsearch/logs
 
-        # environment:
-            # - discovery.type=single-node
-            # - ES_PATH_CONF=/etc/elasticsearch
-            # - path.data=/var/lib/elasticsearch
-        # command: ["/usr/local/bin/docker-entrypoint.sh"]
-        # command: ["/bin/bash","-c","bin/elasticsearch"]
-        command: tail -f /dev/null
+        environment:
+            - discovery.type=single-node
+            - ES_PATH_CONF=/usr/share/elasticsearch/config
+            # where the data is stored
+            - path.data=/usr/share/elasticsearch/data
+            - path.logs=/usr/share/elasticsearch/logs
+        # command: tail -f /dev/null
+
+    microblog:
+        depends_on:
+            - dbserver
+            - elasticsearch-server
+        image: lentychang/microblog:latest
+        container_name: microblog
+        hostname: microblog
+        networks: 
+            - blogs
+        ports:
+            - 8000:5000
+        env_file: ./env/.testEnv
+        volumes:
+            - ../app:/home/microblog/app
+
+        working_dir: /home/microblog
+        user: microblog
+        entrypoint: ./boot.sh
+        # entrypoint: tail -f /dev/null
 
 networks:
     blogs:
