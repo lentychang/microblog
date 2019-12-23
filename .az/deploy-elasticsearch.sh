@@ -5,7 +5,7 @@ if [ -z ${location+x} ]; then export location=westeurope; fi
 accountName=elasticsearchconfig
 sharename=esconfig
 
-esconfigLocDir=/home/lenty/scripts/python/flask/microblog/Docker/esconfig
+esconfigLocDir=../Docker/esconfig
 
 # create storage account
 az storage account create --name $accountName --resource-group $resourceGrp --location $location --sku Standard_LRS
