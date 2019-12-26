@@ -12,3 +12,9 @@ All service name is created with fixed given name. Previous deployed services ne
   In production, it is not wise to shutdown/delete all services and redeploy. A better approach is deploy with different name, and switch with dns/nginx when the new deployment is done.  
 - Possible solution: Add $RANDOM to service name  
 However, it need some work to propagate the name.  
+
+## CI: Deployment a single VM for testing
+
+
+## Automatic deployment
+The deployment is done by manually triggered
