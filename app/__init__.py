@@ -14,6 +14,9 @@ import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
 import os
 
+from redis import Redis
+import rq
+
 db = SQLAlchemy()
 migrate = Migrate()
 login = LoginManager()
@@ -49,6 +52,9 @@ def create_app(config_class=Config):
 
     app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
         if app.config['ELASTICSEARCH_URL'] else None
+
+    app.redis = Redis.from_url(app.config['REDIS_URL'])
+    app.task_queue = rq.Queue('microblog-tasks', connection=app.redis)
 
     from app.errors import bp as errors_bp
     app.register_blueprint(errors_bp)
