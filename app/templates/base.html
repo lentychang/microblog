@@ -2,7 +2,9 @@
 {% block title %}
 {% if title %}{{ title }} - Microblog{% else %}Welcome to Microblog{% endif %}
 {% endblock %}
-
+<head>
+{{ JSGlue.include() }}
+</head>
 {% block navbar %}
 <nav class="navbar navbar-default">
     <div class="container">
@@ -46,9 +48,18 @@
                 </li>
                 <li><a href="{{ url_for('auth.logout') }}">{{ _('Logout') }}</a></li>
                 {% endif %}
-                <li><a href="{{ url_for('main.set_language', language='en') }}">English</a></li>
+                <li>
+                    <label> {{_('Language')}}</label>
+                    <select name="language" id="language" onmouseup="changeLanguage(this)">
+                        <option value="en">English</option>
+                        <option value="de">Deutsch</option>
+                        <option value="zh">Chinese(Trad.)</option>
+                    </select>
+                    
+                </li>
+                <!-- <li><a href="{{ url_for('main.set_language', language='en') }}">English</a></li>
                 <li><a href="{{ url_for('main.set_language', language='zh') }}">Chinese(Trad.)</a></li>
-                <li><a href="{{ url_for('main.set_language', language='de') }}">Deutsch</a></li>
+                <li><a href="{{ url_for('main.set_language', language='de') }}">Deutsch</a></li> -->
             </ul>
         </div>
     </div>
@@ -177,6 +188,13 @@
         }, 10000);
     });
     {% endif %}
+
+    function changeLanguage(x){
+        var lang = document.getElementById("language");
+        // This is bound to main.set_language in route of main
+        location.href = "http://127.0.0.1:5000/lang/" + lang.value;
+    }
+
 </script>
 
 

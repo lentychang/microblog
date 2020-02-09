@@ -9,6 +9,7 @@ from flask_moment import Moment
 from flask_babel import Babel
 from flask_babel import lazy_gettext as _l
 from elasticsearch import Elasticsearch
+from flask_jsglue import JSGlue
 
 import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
@@ -26,6 +27,7 @@ mail = Mail()
 bootstrap = Bootstrap()
 moment = Moment()
 babel = Babel()
+jsglue = JSGlue()
 
 
 @babel.localeselector
@@ -50,6 +52,7 @@ def create_app(config_class=Config):
     bootstrap.init_app(app)
     moment.init_app(app)
     babel.init_app(app)
+    jsglue.init_app(app)
 
     app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
         if app.config['ELASTICSEARCH_URL'] else None
