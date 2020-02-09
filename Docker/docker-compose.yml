@@ -22,7 +22,7 @@ services:
             - blogs
         ports:
             - 9200:9200
-            - 9300:9300
+            # - 9300:9300
         user: elasticsearch
         volumes:
             # - ./esconfig/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
@@ -60,6 +60,26 @@ services:
         user: microblog
         entrypoint: ./boot.sh
         # entrypoint: tail -f /dev/null
+
+    redis-server:
+        image: redis:3-alpine
+        hostname: redis-server
+        container_name: redis-server
+        networks:
+            - blogs
+        ports:
+            - 6379:6379
+            - 9300:9300
+        
+        environment:
+            - discovery.type=single-node
+            - ES_PATH_CONF=/usr/share/elasticsearch/config
+            # where the data is stored
+            - path.data=/usr/share/elasticsearch/data
+            - path.logs=/usr/share/elasticsearch/logs
+        # command: tail -f /dev/null
+
+
 
 networks:
     blogs:
